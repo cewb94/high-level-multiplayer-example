@@ -2,8 +2,12 @@ using Godot;
 using Godot.Collections;
 
 [GlobalClass]
-public partial class Lobby : Node
+public partial class Lobby : Control
 {
+    [Export] public LineEdit NameInput;
+    [Export] public LineEdit IPInput;
+    [Export] public Button HostButton;
+    [Export] public Button JoinButton;
     // public static Lobby Instance { get; private set; }
 
     // These signals can be connected to by a UI lobby scene or the game scene.
@@ -40,6 +44,22 @@ public partial class Lobby : Node
 
     public override void _Ready()
     {
+        // GUI node binding
+        if (NameInput == null) NameInput = GetNodeOrNull<LineEdit>("VBoxContainer/NameInput");
+        if (IPInput == null) IPInput = GetNodeOrNull<LineEdit>("VBoxContainer/IPInput");
+        if (HostButton == null) HostButton = GetNodeOrNull<Button>("VBoxContainer/HBoxContainer/HostButton");
+        if (JoinButton == null) JoinButton = GetNodeOrNull<Button>("VBoxContainer/HBoxContainer/JoinButton");
+
+        if (HostButton != null)
+        {
+            HostButton.Pressed += OnHostButtonPressed;
+        }
+
+        if (JoinButton != null)
+        {
+            JoinButton.Pressed += OnJoinButtonPressed;
+        }
+
         // Instance = this;
         Multiplayer.PeerConnected += OnPlayerConnected;
         Multiplayer.PeerDisconnected += OnPlayerDisconnected;
@@ -150,5 +170,20 @@ public partial class Lobby : Node
         Multiplayer.MultiplayerPeer = null;
         _players.Clear();
         EmitSignal(SignalName.ServerDisconnected);
+    }
+
+    private void OnHostButtonPressed()
+    {
+        if (NameInput != null) SetPlayerName(NameInput.Text);
+        CreateGame();
+        GD.Print($"Hosting Game as {(NameInput != null ? NameInput.Text : "Unknown")}");
+    }
+
+    private void OnJoinButtonPressed()
+    {
+        if (NameInput != null) SetPlayerName(NameInput.Text);
+        string address = IPInput != null ? IPInput.Text : "";
+        JoinGame(address);
+        GD.Print($"Joining Game at {address} as {(NameInput != null ? NameInput.Text : "Unknown")}");
     }
 }

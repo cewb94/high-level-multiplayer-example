@@ -2,14 +2,13 @@
 
 [ext_resource type="Script" uid="uid://c74s4dmh8t4l1" path="res://Scripts/Main.cs" id="1_idj7w"]
 [ext_resource type="Script" uid="uid://t4jawvfvccmb" path="res://Scripts/Game.cs" id="2_idj7w"]
-[ext_resource type="Script" uid="uid://bxvjti2ntncmi" path="res://Scripts/Lobby.cs" id="2_kln2b"]
+[ext_resource type="PackedScene" uid="uid://blm81exk3ejom" path="res://Scenes/Lobby.tscn" id="2_kln2b"]
 [ext_resource type="Script" uid="uid://d1tl10rk5aqs8" path="res://Scripts/Controller.cs" id="4_rgh2o"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_idj7w")
 
-[node name="Lobby" type="Node" parent="."]
-script = ExtResource("2_kln2b")
+[node name="Lobby" parent="." instance=ExtResource("2_kln2b")]
 
 [node name="Game" type="Node" parent="."]
 script = ExtResource("2_idj7w")
