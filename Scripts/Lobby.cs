@@ -1,9 +1,10 @@
 using Godot;
 using Godot.Collections;
 
+[GlobalClass]
 public partial class Lobby : Node
 {
-    public static Lobby Instance { get; private set; }
+    // public static Lobby Instance { get; private set; }
 
     // These signals can be connected to by a UI lobby scene or the game scene.
     [Signal]
@@ -32,9 +33,14 @@ public partial class Lobby : Node
 
     private int _playersLoaded = 0;
 
+    public void SetPlayerName(string name)
+    {
+        _playerInfo["Name"] = name;
+    }
+
     public override void _Ready()
     {
-        Instance = this;
+        // Instance = this;
         Multiplayer.PeerConnected += OnPlayerConnected;
         Multiplayer.PeerDisconnected += OnPlayerDisconnected;
         Multiplayer.ConnectedToServer += OnConnectOk;
@@ -42,7 +48,7 @@ public partial class Lobby : Node
         Multiplayer.ServerDisconnected += OnServerDisconnected;
     }
 
-    private Error JoinGame(string address = "")
+    public Error JoinGame(string address = "")
     {
         if (string.IsNullOrEmpty(address))
         {
@@ -61,7 +67,7 @@ public partial class Lobby : Node
         return Error.Ok;
     }
 
-    private Error CreateGame()
+    public Error CreateGame()
     {
         var peer = new ENetMultiplayerPeer();
         Error error = peer.CreateServer(Port, MaxConnections);
