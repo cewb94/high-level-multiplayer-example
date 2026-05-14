@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://cq4pn0poba247"]
+
+[ext_resource type="Script" uid="uid://c74s4dmh8t4l1" path="res://Scripts/Main.cs" id="1_idj7w"]
+[ext_resource type="Script" uid="uid://t4jawvfvccmb" path="res://Scripts/Game.cs" id="2_idj7w"]
+[ext_resource type="Script" uid="uid://bxvjti2ntncmi" path="res://Scripts/Lobby.cs" id="2_kln2b"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_idj7w")
+
+[node name="Lobby" type="Node" parent="."]
+script = ExtResource("2_kln2b")
+
+[node name="Game" type="Node" parent="."]
+script = ExtResource("2_idj7w")

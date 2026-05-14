@@ -1,0 +1,34 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Godot-specific
+.import/
+.export/
+mono_crash.*
+
+# C# build files
+bin/
+obj/
+.mono/
+.nuget/
+
+# VS Code
+.vscode/
+
+# Rider / VS
+.idea/
+*.sln.DotSettings.user
+
+# OS junk
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# archive
+*.zip
+
+# local conf path
+user_conf_path.txt
