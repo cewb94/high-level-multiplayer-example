@@ -9,6 +9,8 @@ public partial class Lobby : Control
     [Export] public Button HostButton;
     [Export] public Button JoinButton;
     [Export] public RichTextLabel EventLog;
+    [Export] public LineEdit PlayerInputBox;
+    [Export] public LineEdit OpponentInputBox;
     // public static Lobby Instance { get; private set; }
 
     // These signals can be connected to by a UI lobby scene or the game scene.
@@ -51,6 +53,13 @@ public partial class Lobby : Control
         if (HostButton == null) HostButton = GetNodeOrNull<Button>("VBoxContainer/HBoxContainer/HostButton");
         if (JoinButton == null) JoinButton = GetNodeOrNull<Button>("VBoxContainer/HBoxContainer/JoinButton");
         if (EventLog == null) EventLog = GetNodeOrNull<RichTextLabel>("VBoxContainer/EventLog");
+        if (PlayerInputBox == null) PlayerInputBox = GetNodeOrNull<LineEdit>("VBoxContainer/PlayerInputBox");
+        if (OpponentInputBox == null) OpponentInputBox = GetNodeOrNull<LineEdit>("VBoxContainer/OpponentInputBox");
+
+        if (PlayerInputBox != null)
+        {
+            PlayerInputBox.TextChanged += OnPlayerInputTextChanged;
+        }
 
         if (HostButton != null)
         {
@@ -199,5 +208,34 @@ public partial class Lobby : Control
         string msg = $"Joining Game at {address} as {(NameInput != null ? NameInput.Text : "Unknown")}";
         GD.Print(msg);
         AddLogEvent(msg);
+    }
+
+    private void OnPlayerInputTextChanged(string newText)
+    {
+        if (Multiplayer.MultiplayerPeer is ENetMultiplayerPeer && Multiplayer.MultiplayerPeer.GetConnectionStatus() == MultiplayerPeer.ConnectionStatus.Connected)
+        {
+            foreach (var peerId in _players.Keys)
+            {
+                if (peerId != Multiplayer.GetUniqueId())
+                {
+                    GD.Print($"[RPC Send] SyncOpponentInput to {peerId}: {newText}");
+                    RpcId(peerId, "SyncOpponentInput", newText);
+                }
+            }
+        }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    public void SyncOpponentInput(string text)
+    {
+        GD.Print($"[RPC Receive] SyncOpponentInput: {text}");
+        if (OpponentInputBox != null)
+        {
+            OpponentInputBox.SetDeferred(LineEdit.PropertyName.Text, text);
+        }
+        else
+        {
+            GD.PrintErr("OpponentInputBox is NULL on this peer!");
+        }
     }
 }

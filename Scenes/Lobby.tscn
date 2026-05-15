@@ -57,6 +57,21 @@ text = "Host Game"
 layout_mode = 2
 text = "Join Game"
 
+[node name="PlayerInputLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "My Input:"
+
+[node name="PlayerInputBox" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="OpponentInputLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Opponent Input:"
+
+[node name="OpponentInputBox" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+editable = false
+
 [node name="EventLog" type="RichTextLabel" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
