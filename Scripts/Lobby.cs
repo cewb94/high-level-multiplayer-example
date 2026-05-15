@@ -11,7 +11,7 @@ public partial class Lobby : Control
     [Export] public RichTextLabel EventLog;
     [Export] public LineEdit PlayerInputBox;
     [Export] public Button SyncInputButton;
-    [Export] public Label OpponentInputBox;
+    [Export] public Label OpponentInput;
     // public static Lobby Instance { get; private set; }
 
     // These signals can be connected to by a UI lobby scene or the game scene.
@@ -56,7 +56,7 @@ public partial class Lobby : Control
         if (EventLog == null) EventLog = GetNodeOrNull<RichTextLabel>("VBoxContainer/EventLog");
         if (PlayerInputBox == null) PlayerInputBox = GetNodeOrNull<LineEdit>("VBoxContainer/PlayerInputBox");
         if (SyncInputButton == null) SyncInputButton = GetNodeOrNull<Button>("VBoxContainer/SyncInputButton");
-        if (OpponentInputBox == null) OpponentInputBox = GetNodeOrNull<Label>("VBoxContainer/OpponentInputBox");
+        if (OpponentInput == null) OpponentInput = GetNodeOrNull<Label>("VBoxContainer/OpponentInput");
 
         if (PlayerInputBox != null)
         {
@@ -240,9 +240,9 @@ public partial class Lobby : Control
     public void SyncOpponentInput(string text)
     {
         GD.Print($"[RPC Receive] SyncOpponentInput: {text}");
-        if (OpponentInputBox != null)
+        if (OpponentInput != null)
         {
-            OpponentInputBox.Text = text;
+            OpponentInput.Text = text;
         }
     }
 }
