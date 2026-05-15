@@ -8,6 +8,7 @@ public partial class Lobby : Control
     [Export] public LineEdit IPInput;
     [Export] public Button HostButton;
     [Export] public Button JoinButton;
+    [Export] public RichTextLabel EventLog;
     // public static Lobby Instance { get; private set; }
 
     // These signals can be connected to by a UI lobby scene or the game scene.
@@ -49,6 +50,7 @@ public partial class Lobby : Control
         if (IPInput == null) IPInput = GetNodeOrNull<LineEdit>("VBoxContainer/IPInput");
         if (HostButton == null) HostButton = GetNodeOrNull<Button>("VBoxContainer/HBoxContainer/HostButton");
         if (JoinButton == null) JoinButton = GetNodeOrNull<Button>("VBoxContainer/HBoxContainer/JoinButton");
+        if (EventLog == null) EventLog = GetNodeOrNull<RichTextLabel>("VBoxContainer/EventLog");
 
         if (HostButton != null)
         {
@@ -172,11 +174,21 @@ public partial class Lobby : Control
         EmitSignal(SignalName.ServerDisconnected);
     }
 
+    public void AddLogEvent(string message)
+    {
+        if (EventLog != null)
+        {
+            EventLog.AppendText(message + "\n");
+        }
+    }
+
     private void OnHostButtonPressed()
     {
         if (NameInput != null) SetPlayerName(NameInput.Text);
         CreateGame();
-        GD.Print($"Hosting Game as {(NameInput != null ? NameInput.Text : "Unknown")}");
+        string msg = $"Hosting Game as {(NameInput != null ? NameInput.Text : "Unknown")}";
+        GD.Print(msg);
+        AddLogEvent(msg);
     }
 
     private void OnJoinButtonPressed()
@@ -184,6 +196,8 @@ public partial class Lobby : Control
         if (NameInput != null) SetPlayerName(NameInput.Text);
         string address = IPInput != null ? IPInput.Text : "";
         JoinGame(address);
-        GD.Print($"Joining Game at {address} as {(NameInput != null ? NameInput.Text : "Unknown")}");
+        string msg = $"Joining Game at {address} as {(NameInput != null ? NameInput.Text : "Unknown")}";
+        GD.Print(msg);
+        AddLogEvent(msg);
     }
 }

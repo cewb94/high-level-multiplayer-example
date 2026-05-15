@@ -27,34 +27,12 @@ public partial class Controller : Node
         }
     }
 
-    public override void _Input(InputEvent @event)
-    {
-        if (@event.IsActionPressed("host"))
-        {
-            OnHostPressed();
-        }
-        else if (@event.IsActionPressed("join"))
-        {
-            OnJoinPressed();
-        }
-        else if (@event.IsActionPressed("connect"))
-        {
-            // OnPlayerConnected(null, null);
-        }
-        else if (@event.IsActionPressed("disconnect"))
-        {
-            // OnPlayerDisconnected(null);
-        }
-    }
 
-    private void OnJoinPressed()
+
+    private void LogEvent(string msg)
     {
-        if (Lobby != null)
-        {
-            Lobby.SetPlayerName(PlayerName);
-            Lobby.JoinGame(HostIp);
-            GD.Print($"Joining Game at {HostIp} as {PlayerName}");
-        }
+        GD.Print(msg);
+        Lobby?.AddLogEvent(msg);
     }
 
     private void OnPlayerConnected(int peerId, Godot.Collections.Dictionary<string, string> playerInfo)
@@ -63,41 +41,31 @@ public partial class Controller : Node
             ? playerInfo["Name"]
             : $"Player {peerId}";
 
-        GD.Print($"Player ID: {peerId} | Name: {playerName}");
+        LogEvent($"Player ID: {peerId} | Name: {playerName}");
 
         if (peerId != Multiplayer.GetUniqueId())
         {
             OpponentName = playerName;
             OpponentId = peerId;
-            GD.Print($"Opponent set -> ID: {OpponentId} | Name: {OpponentName}");
+            LogEvent($"Opponent set -> ID: {OpponentId} | Name: {OpponentName}");
         }
     }
 
     private void OnPlayerDisconnected(int peerId)
     {
-        GD.Print($"Player disconnected: {peerId}");
+        LogEvent($"Player disconnected: {peerId}");
         if (peerId == OpponentId)
         {
             OpponentName = "";
             OpponentId = 0;
-            GD.Print("Opponent disconnected.");
+            LogEvent("Opponent disconnected.");
         }
     }
 
     private void OnServerDisconnected()
     {
-        // PlayerList.Clear();
-
-        GD.Print("Disconnected from server.");
+        LogEvent("Disconnected from server.");
     }
 
-    private void OnHostPressed()
-    {
-        if (Lobby != null)
-        {
-            Lobby.SetPlayerName(PlayerName);
-            Lobby.CreateGame();
-            GD.Print($"Hosting Game as {PlayerName}");
-        }
-    }
+
 }

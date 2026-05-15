@@ -56,3 +56,8 @@ text = "Host Game"
 [node name="JoinButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Join Game"
+
+[node name="EventLog" type="RichTextLabel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+scroll_following = true
