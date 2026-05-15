@@ -63,14 +63,19 @@ text = "My Input:"
 
 [node name="PlayerInputBox" type="LineEdit" parent="VBoxContainer"]
 layout_mode = 2
+keep_editing_on_text_submit = true
+
+[node name="SyncInputButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Sync Input"
 
 [node name="OpponentInputLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "Opponent Input:"
 
-[node name="OpponentInputBox" type="LineEdit" parent="VBoxContainer"]
+[node name="OpponentInputBox" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-editable = false
+text = "..."
 
 [node name="EventLog" type="RichTextLabel" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 150)

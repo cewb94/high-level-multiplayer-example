@@ -10,7 +10,8 @@ public partial class Lobby : Control
     [Export] public Button JoinButton;
     [Export] public RichTextLabel EventLog;
     [Export] public LineEdit PlayerInputBox;
-    [Export] public LineEdit OpponentInputBox;
+    [Export] public Button SyncInputButton;
+    [Export] public Label OpponentInputBox;
     // public static Lobby Instance { get; private set; }
 
     // These signals can be connected to by a UI lobby scene or the game scene.
@@ -54,11 +55,17 @@ public partial class Lobby : Control
         if (JoinButton == null) JoinButton = GetNodeOrNull<Button>("VBoxContainer/HBoxContainer/JoinButton");
         if (EventLog == null) EventLog = GetNodeOrNull<RichTextLabel>("VBoxContainer/EventLog");
         if (PlayerInputBox == null) PlayerInputBox = GetNodeOrNull<LineEdit>("VBoxContainer/PlayerInputBox");
-        if (OpponentInputBox == null) OpponentInputBox = GetNodeOrNull<LineEdit>("VBoxContainer/OpponentInputBox");
+        if (SyncInputButton == null) SyncInputButton = GetNodeOrNull<Button>("VBoxContainer/SyncInputButton");
+        if (OpponentInputBox == null) OpponentInputBox = GetNodeOrNull<Label>("VBoxContainer/OpponentInputBox");
 
         if (PlayerInputBox != null)
         {
             PlayerInputBox.TextChanged += OnPlayerInputTextChanged;
+        }
+
+        if (SyncInputButton != null)
+        {
+            SyncInputButton.Pressed += OnSyncInputButtonPressed;
         }
 
         if (HostButton != null)
@@ -212,16 +219,20 @@ public partial class Lobby : Control
 
     private void OnPlayerInputTextChanged(string newText)
     {
-        if (Multiplayer.MultiplayerPeer is ENetMultiplayerPeer && Multiplayer.MultiplayerPeer.GetConnectionStatus() == MultiplayerPeer.ConnectionStatus.Connected)
+        GD.Print($"[Local] Typed: {newText}");
+        if (Multiplayer.MultiplayerPeer != null)
         {
-            foreach (var peerId in _players.Keys)
-            {
-                if (peerId != Multiplayer.GetUniqueId())
-                {
-                    GD.Print($"[RPC Send] SyncOpponentInput to {peerId}: {newText}");
-                    RpcId(peerId, "SyncOpponentInput", newText);
-                }
-            }
+            Rpc(MethodName.SyncOpponentInput, newText);
+        }
+    }
+
+    private void OnSyncInputButtonPressed()
+    {
+        string textToSend = PlayerInputBox != null ? PlayerInputBox.Text : "";
+        GD.Print($"[Local] Button Sync: {textToSend}");
+        if (Multiplayer.MultiplayerPeer != null)
+        {
+            Rpc(MethodName.SyncOpponentInput, textToSend);
         }
     }
 
@@ -231,11 +242,7 @@ public partial class Lobby : Control
         GD.Print($"[RPC Receive] SyncOpponentInput: {text}");
         if (OpponentInputBox != null)
         {
-            OpponentInputBox.SetDeferred(LineEdit.PropertyName.Text, text);
-        }
-        else
-        {
-            GD.PrintErr("OpponentInputBox is NULL on this peer!");
+            OpponentInputBox.Text = text;
         }
     }
 }
