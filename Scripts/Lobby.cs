@@ -101,6 +101,7 @@ public partial class Lobby : Control
             return error;
         }
 
+        // initializing Multiplayer Peer
         Multiplayer.MultiplayerPeer = peer;
         return Error.Ok;
     }
@@ -232,10 +233,12 @@ public partial class Lobby : Control
         GD.Print($"[Local] Button Sync: {textToSend}");
         if (Multiplayer.MultiplayerPeer != null)
         {
+            // call to send client input to other peer
             Rpc(MethodName.SyncOpponentInput, textToSend);
         }
     }
 
+    // annotated method which gets RPC called to send/sync opponent input
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     public void SyncOpponentInput(string text)
     {
